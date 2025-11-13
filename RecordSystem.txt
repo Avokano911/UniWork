@@ -1,0 +1,569 @@
+CLASS StudentRecordSystem
+
+BEGIN StudentRecordSystem
+
+    CLASS FIELDS:
+        StudentRecords (Array of student informations)
+        TrackStudents
+        FileName (csv file)
+
+     MAIN:
+      INT choice = 0
+      readFile(FileName)
+      INT TrackStudents = 0 
+      ReadDatas() 
+       
+       DO
+
+       PRINT <- "==== Main Menu ======" ->
+       PRINT <- "Welcome to Student OASIS" ->
+       PRINT <- "==== Main Menu ======" ->
+       PRINT <- "0. add new student " ->
+       PRINT <- "1. Edit existing student " ->
+       PRINT <- "2. View all student " ->
+       PRINT <- "3. Filter by Course " ->
+       PRINT <- "4. Filter by Status " ->
+       PRINT <- "5. Highest CWA  " ->
+       PRINT <- "6. Average CWA" ->
+       PRINT <- "7. Credit Analysis " ->
+       PRINT <- "8. EXIT " ->
+       
+       TRY:
+       
+       choice = ASKUSER INPUT "Please enter your choice"
+
+       SWITCH (choice):
+             
+              CASE 0: 
+              
+              String NewStudentID = ASKUSER INPUT <- "Please enter student ID to add ->
+              
+              String Newfirstname = ASKUSER INPUT <- "Please enter firstname to add ->
+              
+              String Newlastname = ASKUSER INPUT <- "Please enter lastname to add ->
+              
+              String NewcField = ASKUSER INPUT <- "Please enter course of field name to add ->
+              
+              Int Newcredits = ASKUSER INPUT <- "Please enter credits to add ->
+              
+              double Newcwa = ASKUSER INPUT <- "Please enter cwa to add ->
+              
+              Int NewyLevel = ASKUSER INPUT <- "Please enter yLevel to add ->
+              
+              String NewStatus = ASKUSER INPUt <- "Please enter Status ("PT"/"FT") To add "->
+              
+              
+              
+              CALL addNewStudent(NewStudentID, Newfirstname, Newlastname,NewcField, Newcredits, Newcwa, NewyLevel )
+              
+              CATCH:
+                    InputMismatchException
+                 ERROR <- "Error: Invalid data type entered for a field " ->
+              CATCH:
+                    Exception
+                 PRINT <- " something happened !" ->
+
+              END TRY
+
+
+              CASE 1: CALL editStudent()
+              CASE 2: CALL DisplayAllStudent()
+              CASE 3: CALL filterByCourse()
+              CASE 4: CALL filterByStatus()
+              CASE 5: CALL HighestCWA()
+              CASE 6: CALL CalculateAverageCWA()
+              CASE 7: CALL CreditAnalysis()
+              CASE 8: PRINT <- "Bye " ->
+
+              DEFAULT: PRINT <- "Invalid Choice" ->
+
+       WHILE (choice!= 8)
+
+   END MAIN
+    
+                
+
+       // ADD A Student
+      
+       METHOD: addNewStudent()
+       IMPORT: none
+       EXPORT: StudentArray
+       
+       BEGIN addNewStudent:
+
+
+       NewInfo = ASK USER INPUT "Enter Student ID to add"
+
+       // Get and Validate Input
+
+       IF NewInfo IS NOT null 
+
+          // Check for the dupplicate
+          IF NewInfo IS NOT EQUAL TO StudentID THEN
+
+          pstudentID = NewInfo
+          pfirstname = ASK USER INPUT "Enter the first name"
+          plastname = ASK USER INPUT "Enter the last name"
+          pcField = ASK USER INPUT "Enter the study filed"
+          pyLevel = ASK USER INPUT "Enter the cwa"
+          pcwa = ASK USER INPUT "Enter the cwa"
+          pstatus = ASK USER INPUT "Enter the status "PT" OR "FT" "
+          pcredits = ASK USER INPUT "Enter the Credits values"
+
+        // Create the New details
+
+        TRY
+
+        NewStudent = NEW Student(pstudentID, pfirstname, plastname, pcField, pyLevel, pcwa, pstatus, pcredits)
+
+       // Add the Student into Array
+
+       IF  NewInfo IS NOT null THEN 
+           TrackStudents = TrackStudents + 1
+           
+           StudentArray[TrackStudents] = NEWStudent
+           PRINT <- "Student added successfully." ->
+
+       ELSE
+
+           PRINT <- "ERROR! Can not add student ! ->
+
+       ENDIF
+      
+       CATCH IllegalArgumentException
+            PRINT <- "Validation Error ! " + ErrorMessage " ->
+
+       CATCH Exception
+            PRINT <- "Error adding student " + ErrorMessage ->
+       END TRY
+       END
+
+       
+
+  
+
+      /* Edit exiting students */
+      
+         METHOD: editStudent()
+         IMPORT: none
+         EXPORT: none
+         
+         BEGIN editStudent:
+      
+      
+        CURRENTStudent Student = CALL findStudentwithID(chooseID)
+        IF CURRENTStudent IS NULL THEN
+            PRIINT <- "Student with ID " + chooseID + " is not on the records" ->
+            RETURN
+        END IF
+            
+
+        Options = ASK USER "Enter field to edit (cField, yLevel, cwa, etc..)"
+        
+        TRY 
+            details cDetails = CURRENTStudent.getDetaisl()
+      
+        IF Options IS "cwa" THEN
+           NewCWA = ASK USER "Enter new CWA "
+           // Update the object.
+           CURRENTStudent.getDetails.setCWA(NewCWA)
+
+        ELSE IF Options IS "yLevel" THEN
+           NewYLeve = ASK USER "Enter new Year Level"
+           CURRENT_Student.getDetails.setYlevel(NewYLevel)
+
+        ELSE IF Options IS "cField" THEN
+           NewcField = ASK USER "Enter new Course Field"
+           CURRENT_Student.getDetails.setcField(NewcField)
+     
+        ELSE IF Options IS "status" THEN
+           NewStatus = ASK USER "Enter new status"
+           CURRENT_Student.getDetails.setStatus(NewStatus)
+
+        ELSE IF Option IS "credits" THEN
+           NewCredits = ASK USER "Enter new credit value"
+           CURRENT_Student.getDetails.setCredits(NewCredits)
+        
+        ELSE
+            PRINT <- " invalid option " ->
+            RETURN
+         PRINT <- "Student record updated ! "->
+         
+         CATCH Exception
+             ERROR < - " Error occured ! " + ErrorMessage ->
+         END TRY
+         
+         CALL ExportAFile()
+         
+         END             
+         
+           
+   /* FIlter by Status*/
+   
+      METHOD: filterByStatus()
+      IMPORT: none
+      EXPORT: none
+      
+      BEGIN filterByStatus:
+        
+        SearchStatus = ASK USER INPUT "Enter status to fileter by (PT/FT)"
+        BOOLEAN found = FALSE
+
+        FOR i=0 : TrackStudents -1 DO
+
+         CURRENTStudent = StudentArray[i]
+
+         IF CURRENTStudent IS NOT NULL AND CURRENTStudent.getDetails() IS NOT NULL THEN
+         
+
+         ActualStatus = CURRENTStudent.getDetails().getStatus()
+         
+        IF ActualStatus == SearchStatus THEN
+
+           PRINT <- CURRENTStudent.getStudentID() + " - Status: " + ActualStatus ->
+           FOUND = TRUE
+
+       ENDIF
+
+       IF !FOUND
+             PRINT <- " No student found ! ->
+       END IF
+       ENDFOR
+       END
+
+       
+
+       
+
+    /* FIlter by course */
+
+       METHOD: filterByCourse()
+       IMPORT: none
+       EXPORT: none
+       
+       BEGIN filterByCourse:
+
+        SearchCourse = ASK USER INPUT "Enter course to filter"
+
+        FOR i=0: TrackStudents - 1 DO 
+
+         CURRENTStudent = StudentArray[i]
+
+        ActualCourse = CURRENTStudent.getDetails().getCourse()
+        
+        IF ActualCourse IS SearchCourse THEN
+           PRINT <- CURRENTStudent.getStudentID() + " - Course of : " + ActualCourse -> 
+           FOUND = TRUE
+
+         IF !Found THEN
+               PRINT <- No student on the course !" ->
+         END IF
+
+         END FOR
+
+         END
+
+       
+
+        /* Function to find highest */
+
+          METHOD: HighestCwa()
+          IMPORT: none
+          EXPORT: none
+          
+          BEGIN HighestCwa:
+          
+           Highest = 0.0:
+           HStudent: 
+
+           FOR i=0: TrackStudents -1:
+            CURRENTStudent = StudentArray[i]
+
+            IF CURRENTStudent IS NOT NULL AND CURRENRStudent.getDetails() IS NOT NULL THEN
+              cwa = CURRENTStudent.getDetails().getcwa()
+
+               IF cwa > Highest THEN
+                  Highest = cwa
+                  HStudent = CURRENTStudent
+
+               END IF
+
+              PRINT "CURRENTStudent.getStudentID() + " -highest of : " + Highest ->
+             END IF
+           END FOR
+
+           IF HStudent IS NOT NULL THEN
+               PRINT <- " iD: " + HStudent.getStudentID() ->
+               PRINT <- " Name : " + HStudent.getFirstname() ->
+               PRINT <- " CWA : " + Highest ->
+            ELSE
+               PRINT <- "NO student on the record ! " ->
+            END IF
+
+          END
+           
+
+
+        /* Calculate and display the average CWA for each course */      
+
+           METHOD: CalculateAverageCWA
+           IMPORT: StudentArray, TrackStudent
+           EXPORT:
+           
+           BEGIN CalculateAverageCWA:
+           
+           String SearchCourse;
+
+           AVGCwa = 0.0
+           TotalCwa = 0.0
+           StudentCount = 0
+           
+           // Check the courses !
+              CURRENTStudent = studentArray[i]
+              
+              COURSE = CURRENTStudent.getDetails().getCourse()
+
+              CWA = CURRENTStudent.gettDetails().getcwa()
+              
+                // Find if the course name is exist
+                SearchCourse = "Which course of the CWA u want to see? "
+
+           // Check for ALL STUDENTS
+           FOR i=0: TrackStudents -1: i++:
+              
+              CURRENTStudent = StudentArray[i]
+
+            IF   CURRENTStudent IS NOT NULL AND CURRENTStudent.getDetails() IS NOT NULL THEN
+            
+               IF SerachCourse IS EQUAL TO COURSE THEN
+
+                TotalCwa = TotalCwa + CWA
+                studentCount ++
+             ENDIF
+            ENDIF
+         ENDFOR
+         
+         IF StudentCount > 0 THEN
+               AVGCwa = TotalCwa / StudentCount
+               PRINT <- AVGCwa ->
+               
+         ELSE
+               PRINT <- " No students found for the course "->
+         END IF
+         
+         END
+         
+
+        
+        /* Credit Analysys */
+        
+        METHOD: CreditAnalysis
+        IMPORT: none
+        EXPORT: none
+        
+        BEGIN CreditAnalysis:
+
+           INT GraduationC = 400;
+
+           FOR i=0: TrackStudents: i++
+           
+           CURRENTStudent = StudentArray[i]
+
+           // Check the credits
+           CREDITS = CURRENTStudents.getDetails().getCredits()
+
+           // See if the credits are 400, so they can graduate.
+           
+           IF CREDITS IS 400 THEN
+
+              PRINT <- "Congraturation ! You are guraduating .  " ->
+          
+           ELSE 
+        
+              PRINT <-" You can not graduate yet ! " ->
+
+           ENDIF
+           
+           END FOR
+           
+           END
+ 
+           
+           
+
+           /* File Handling */
+           // At the program's start, data must be loaded from a file
+           
+           METHOD: readFile
+           IMPORT: pfilename
+           EXPORT: entries 
+           
+           BEGIN readFile
+           
+           TRY
+                 fileHandle = OPENFILE filename
+                 lineNum = 0
+                 line = Read_line(fileHanfle)
+                 
+                 WHILE line IS NOT NULL DO
+                       CALL processLine(line, lineNum)
+                       lineNum = lineNum + 1
+                       line = Read_line(fileHandle)
+                 END WHILE
+                 
+                 CLOSE_File(fileHandle)
+             CATCH IOEException
+                 IF fileHandle IS NOT NULL THEN
+                     TRY 
+                         CLOSE_File(fileHandle)
+                      CATCH IOException
+                          // Nothing to do
+                      END TRY
+                 END IF
+                 PRINT <- " ERROR IN THE FILE " ->
+               END TRY
+               
+               RETURN entries
+               
+               END
+                     
+                     
+                      
+           
+           METHOD: ExportAFile()
+           IMPORT: pFileName
+           EXPORT: none
+           
+           BEGIN ExportAFile
+           
+               TRY 
+               
+               writer FileWriter = OPEN_File_And_Write(pFileName)
+               
+               FOR i=0 : TrackStudent -1 DO
+                   S Student = studentRecords[i]
+                   
+               IF S IS NOT NULL AND S.getDetails() IS NOT NULL THEN
+                     Details cDetails = S.getDetails()
+                     
+                     WriteIn = S.getStudentID() + "," + S.getFirstname() + "," + S.getLastname() + 
+                               "," + Details.getcField() + "," + Details.getyLevel() + "," + 
+                               Details.getstatus() + "," + Details.getcredits() 
+                     WRITE_TO_File(writer, WriteIn)
+                END IF
+                END FOR
+                
+                CLSOSE_FILE(writer)
+             CATCH IOException
+                    ERROR <- " An error occurred " + ErrorMessage ->
+              END TRY
+              
+              END      
+
+            /* ProcessLine */
+            
+            METHOD: ProcessLine
+            IMPORT: csvRow
+            EXPORT: none
+            
+            BEGIN ProcessLine
+              
+              String[] splitLine
+              splitLine = csvRow.split(",")
+              int lineLength = splitLine.length
+              
+              StudentF = 8
+              
+              IF SplitLine != StudentF THEN
+                    PRINT <- " Does not meet with the number of attributes we need " ->
+                    RETURN
+               END IF
+               
+               TRY
+               
+                            studentID = splitline[0].trim()
+                            firstName  = splitline[1].trim()
+                            lastName = splitline[2].trim()
+
+                            cField  = splitline[3].trim()
+                            yLevel = (splitline[4].trim())
+                            cwa = (splitline[5].trim())
+                            status  = splitline[6].trim()
+                            credits = (splitline[7].trim())
+
+                     IF studentID.isEmpty() OR firstName.isEmpty() OR lastName.isEmpty() THEN
+                         PRINT <- "Skipped the line due to empty data on line " + lineNum "->
+                         RETURN
+                     END  IF
+                     
+                     newStudent Student = NEW Student(studentID, firstname, lastname)
+                     newDetails cDetails = New cDetails(cField, yLevel, cwa. status, credits)
+                     
+                     studentRecords[TrackStudents] = newStudent
+                     TrackStudents = TrackStudents + 1
+                     
+                CATCH Exception
+                      ERROR <- "Skipped line " + lineNum + " + ErrorMessage ->
+                END TRY
+                
+                END
+               
+              
+           /* DisplayAllStudent */
+           
+           METHOD: DisplayAllStudent
+           IMPORT: none
+           EXPORT none
+           
+           BEGIN DisplayAllStudent:
+           
+           IF TrackStudents > 0 THEN 
+                FOR i=0: TrackStudents -1 DO
+                   CURRENTStudent Student = studentRecords[i]
+                   StudetID = CURRENTStudent.getStudentID()
+                   Name = CURRENTStudent.getFirstname()
+                   LastName = CURRENTStudent.getLastname()
+                   
+                   PRINT < i + " : " + StudentID + "" + Name + "" + Lastname ->
+                END FOR
+           ELSE
+                PRINT <-"  no students yet ! " ->
+                
+           END IF
+           
+           END
+           
+           /* FindStudent From ID * /
+           
+           METHOD: findStudentWithID
+           IMPORT: studenTID
+           EXPORT: StudentRecords[i]
+           
+           BEGIN findStudentWithID:
+           
+           FOR i=0: TrackStudents - 1 DO
+                IF studentRecords[i] IS NOT NULL AND studentRecords[i].getStudentID() = studentID THEN
+                     RETURN studentRecords[i]
+           END FOR
+           RETURN NULL
+           
+           END
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           
+           

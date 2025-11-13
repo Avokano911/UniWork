@@ -1,0 +1,122 @@
+
+CLASS Student
+     CLASS FIELDS:
+        studentID (Integer)
+        firstname (Strings)
+        lastname  (Strings)
+
+        StudentDetails //Inherit From Details
+        
+        
+CONSTRUCTOR with PARAMETERS
+IMPORT: pStudentID(Integer), pFirstname(String), pLastname(String)
+EXPORT: none
+ASSERTION: Create object with imported values
+ALGORITHM:
+
+      StudentID = validStudentID(pStudentID)
+      firstname = validFirstname(pFirstname)
+      lastname = validLastname(pLastname)
+
+
+
+Mutator: validStudentID(Integer)
+IMPORT: pStudentID
+EXPORT: StudentID
+ASSERTION: Returned the validate Student ID
+ALGORITHM:
+        IF pStudentID IS null THEN
+           ERROR ""StudentID can not be empty"
+        ELSE IF pStudenID IS NOT Integer THEN
+           ERROR "invalid Id data type."
+        ELSE IF LENGTH(STRING(pStudentID)) IS NOT 8 THEN
+           ERROR "have to be 8 digits."
+        ELSE 
+           RETURN pStudentID
+        ENDIF
+
+Mutator: validateFirstname(Strings)
+IMPORT: pFirstname
+EXPORT: Firstname
+ASSERTION: Returned the validate Firstname
+ALGORITHM:
+        IF pFirstname IS null OR pFirstname IS EMPTY THEN
+           ERROR  "Firstname can not be empty!"
+        ELSE IF pFIrstname IS NOT String THEN
+           ERROR "Invalid data type."
+        ELSE 
+           RETURN pFirstname
+        ENDIF 
+
+Mutator: validateLastname(Strings)
+IMPORT: pLastname
+EXPORT: Lastname
+ASSERTION: Returned the va;idate Lastname
+ALGORITHM:
+        IF pLastname IS null OR pLastname IS EMPTY THEN
+           ERROR "Lastname can not be emooty!"
+        IF pLastname IS NOT STRING THEN
+           ERROR "Invalid data type."
+        ELSE
+           RETURN pLastname
+        ENDIF
+        
+
+ACCESSOR: getStudetID
+IMPORT: none
+EXPORT: StudentID(Integer)
+ASSERTION: Returned the StudentID
+ALGORITHM:
+       RETURN StudentID
+
+
+ACCESSOR: getFirstname
+IMPORT: none
+EXPORT: Firstname
+ASSERTION: Returned the Firstname
+ALGORITHM:
+       RETURN Firstname
+
+ACCESSOR: getLastname
+IMPORT: none
+EXPORT: Lastname
+ASSERTION: Returned the Lastname
+ALGORITHM: 
+        RETURN Lastname
+
+ACCESSOR: getDetails
+IMPPORT: none
+ASSERTION: Returned the getDetails From child class(cDetails)
+ALGORITHM:
+         RETURN StudentDetails
+         
+ACCESSOR: setDetails(cDetails pDetails)
+IMPORT: pDetails
+ASSERTION: set the StudentDetails as pDetails
+ALGORITHM: 
+            StudentDetails = pDetails
+
+Mutator: setFirstname
+IMPORT: pFirstname
+EXPORT: firstname
+ASSERTION: set the firstname as pFirstname
+ALGORITHM:
+         firstname = pFirstname
+         
+Mutator: setLastname
+IMPORT: pLastname
+EXPORT: lastname
+ASSERTION: set the lastname as pLastname
+ALGORITHM:
+         lastname = pLastname
+         
+Mutator: setStudentID
+IMPORT: pStudentID
+EXPORT: studentID
+ASSERTION: set the studentID as pStudentID
+ALGORITHM:
+        studentID = pStudentID
+   
+
+
+

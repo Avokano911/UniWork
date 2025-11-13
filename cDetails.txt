@@ -1,0 +1,202 @@
+CLASS cDetails
+     CLASS FIELDS:
+        cField (String)
+        yLevel (Integer)
+        cwa (Float)
+        status (Strings)
+        credits (Integer)
+        
+
+
+CONSTRUCTOR with PARAMETERS
+IMPORT: pcField(strings), pyLevel(Integer), pCwa(float), pStatus(strings), pCrediits(Integer)
+EXPORT: none
+ASSETION: Created object with imported values
+ALGORITHM:
+      // CALL the validation and initializes object with validated values.
+      cField = validField(pcField)
+      yLevel = validateLevel(pyLevel)
+      cwa = validateCwa(pCwa)
+      status = validateStatus(pStatus)
+      credits = validate(pCredits)
+
+
+Mutator: validcField(String)
+IMPORT: pcField
+EXPORT: cField
+ASSERTION: Returned the validate cField
+ALGORITHM:
+       IF pcField IS null OR pcField IS NOT String THEN
+             ERROR " Your input is not valid ."
+       ELSE
+             RETURN pcField
+       ENDIF
+
+Mutatot: validateyLevel(Integer)
+IMPORT: pyLevel
+EXPORT: yLevel
+ASSETION: Returned the validate pyLevel
+ALGORITHM:
+        IF pyLevel IS null THEN
+             ERROR "Input can not be null."
+        ELSE IF pyLevel IS NOT Integer THEN
+             ERROR "Input have to be integer!."
+        ELSE IF pyLevel < 1 OR pyLevel > 4 THEN
+             ERROR "Input have to be greater than 0 and less than 5."
+        ELSE
+             RETURN pyLevel
+        END IF
+
+Mutator: validateCwa(float)
+IMPORT: pCwa
+EXPORT: cwa
+ASSETION: Returned the validate pCwa
+ALGORITHM:
+        IF pCwa IS null THEN
+           ERROR "Input can not be null. "
+        ELSE IF pCwa < 0 OR pCwa > 101 THEN
+           ERROR "CWA can not be less than 0 AND greater than 101. "
+        ELSE IF pCwa IS NOT Float AND pCwa IS NOT Integer THEN
+           ERROR "Invalid data type"
+        ELSE
+           RETURN pCwa
+        END IF
+           
+
+Mutator: validateStatus(String)
+IMPORT: pStatus
+EXPORT: Status
+ASSETION: Returned the validate pStatus
+ALGORITHM:
+        IF pStatus IS null THEN
+           ERROR "Input can not be null."
+        ELSE IF pStatus IS NOT String THEN
+           ERROR "Status should be strings."
+        ELSE IF UPPERCASE.pStatus IS NOT "PT" AND UPPERCASE.pStatus IS NOT "FT" THEN
+                ERROR "Status need to be EITHER "PT" OR "FT"."
+        ELSE
+           RETURN pStatus
+        ENDIF
+
+Mutator: validCredit(Integer)
+IMPORT: pCresits
+EXPORT: Credits
+ASSERTION: Returned the validate pCredits
+ALGORITHM:
+        IF pCredits < 0 OR > 401 THEN
+           ERROR "Credit can not be negative or more than 401."
+        ELSE IF pCredits IS NOT Integer THEN
+           ERROR "invalid credit data type."
+        ELSE 
+           RETURN pCredits
+        ENDIF
+
+
+ACCESSOR: getcField
+IMPORT: none
+EXPORT: cField (Strings)
+ASSERTION: Returned the cField
+ALGORITHM:
+        RETURN cField
+
+ACCESSOR: getyLevel
+IMPORT: none
+EXPORT: yLevel (Integer)
+ASSERTION: Returned the yLevel
+ALGORITHM: 
+        RETURN yLevel
+
+
+ACCESSOR: getcwa
+IMPORT: none
+EXPORT: cwa(float)
+ASSERTION: Returned the cwa
+ALGORITHM:
+        RETURN cwa
+
+
+ACCESSOR: getstatus
+IMPORT: none
+EXPORT: Status("PT","FT")
+ASSERTION: Returned the status
+ALGORITHM:
+        RETURN status
+
+
+ACCESSOR: getcredits
+IMPORT: none
+EXPORT: credits(Integer)
+ASSERTION: Returned the credits
+ALGORITHM:
+       RETURN credits
+
+
+ACCESSOR: getStudetID
+IMPORT: none
+EXPORT: StudentID(Integer)
+ASSERTION: Returned the StudentID
+ALGORITHM:
+       RETURN StudentID
+
+
+ACCESSOR: getFirstname
+IMPORT: none
+EXPORT: Firstname
+ASSERTION: Returned the Firstname
+ALGORITHM:
+       RETURN Firstname
+
+ACCESSOR: getLastname
+IMPORT: none
+EXPORT: Lastname
+ASSERTION: Returned the Lastname
+ALGORITHM: 
+        RETURN Lastname
+        
+// setter
+Mutator: setDetails
+IMPORT: pDetails (From cDetails)
+EXPORT: StudentDetails
+ASSETION: set the studentDetails as pDetails
+ALGORITHM: 
+        StudentDetails = pDetails
+
+Mutator: setcField
+IMPORT: pcFielld
+EXPORT: cField
+ASSETION: set the cField as pcField
+ALGORITHM:
+         cField = validcField(pcField)
+         
+Mutator: setyLevel
+IMPORT: pyLevel
+EXPORT: yLevel
+ASSERTION: set the yLevel as pyLevel
+ALGORITHM:
+         pyLevel = validyLevel(pyLevel)
+         
+Mutator: setCwa
+IMPORT: pCwa
+EXPORT: cwa
+ASSERTION: set the cwa as pCwa
+ALGOTIMTHM:
+          pCwa = validCwa(pCwa)
+          
+Mutator: setStatus
+IMPORT: pStatus
+EXPORT: status
+ASSERTION: set the status as pStatus
+ALGORITHM:
+         status = validStatus(pStatus)
+
+Mutator: setCredits
+IMPORT: pCredits
+EXPORT: credits
+ASSERTION: set the credits
+ALGORITHM: 
+        credits = valid(pCredits)
+
+
+        
+
+
